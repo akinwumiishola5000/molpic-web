@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — MolPic Web</title>
+<meta name="description" content="How to get a publication-ready molecule image: choosing a format, resolution, backgrounds, and writing SMILES.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="index.html">Mol<span>Pic</span></a>
+    <nav class="nav">
+      <a href="index.html">Single structure</a>
+      <a href="panel.html">Panel figure</a>
+      <a href="guide.html" class="active">Guide</a>
+      <a href="about.html">About</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">Documentation</span>
+    <h1>Guide</h1>
+    <p>Everything you need to get a figure that survives peer review, plus a short primer for anyone who has never written a SMILES string.</p>
+  </section>
+
+  <section class="section prose">
+
+    <h2>Drawing one structure</h2>
+    <ol class="steps">
+      <li><strong>Enter the compound.</strong> Type a name and press <kbd>Enter</kbd> to resolve it through PubChem, or paste a SMILES string directly. SMILES is faster and works offline once the page has loaded.</li>
+      <li><strong>Check the depiction.</strong> The strip under the structure reports molecular weight, heavy-atom count, and ring count. If those numbers don't match what you expect, the input was probably not the molecule you intended.</li>
+      <li><strong>Choose a format.</strong> SVG for anything going into a manuscript. PNG when a submission system rejects vector files.</li>
+      <li><strong>Download.</strong> The file is written straight from your browser to your machine.</li>
+    </ol>
+
+    <h2>SVG or PNG</h2>
+    <p>SVG stores the drawing as instructions rather than pixels, so it stays perfectly sharp at any size and typically weighs a few kilobytes. It is the right default for journals, theses, and LaTeX.</p>
+    <p>PNG is pixels at a fixed size. Use it when something downstream cannot accept vector files — some submission portals, some slide templates, most messaging apps.</p>
+
+    <table>
+      <thead><tr><th>Setting</th><th>Output size</th><th>Suited to</th></tr></thead>
+      <tbody>
+        <tr><td>SVG</td><td>Any</td><td>Manuscripts, posters, theses, LaTeX</td></tr>
+        <tr><td>PNG 2×</td><td>1120 × 880 px</td><td>Slides, web pages</td></tr>
+        <tr><td>PNG 4×</td><td>2240 × 1760 px</td><td>Print at roughly 300 dpi</td></tr>
+        <tr><td>PNG 8×</td><td>4480 × 3520 px</td><td>Large-format posters, ~600 dpi</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Backgrounds</h2>
+    <p>Downloads are white by default, which is what journals and slide decks expect and what avoids the classic failure of black-on-black when a file is dropped onto a dark theme.</p>
+    <p>Switch on <em>Transparent background</em> when you're compositing the structure over a coloured panel or a photograph. Two cautions: some manuscript systems flatten alpha to black rather than white, and Microsoft Word has historically mishandled transparent PNGs when printing. If a figure must simply work everywhere, leave the setting off.</p>
+
+    <div class="callout">
+      <p><strong>Before submitting:</strong> open the downloaded file on its own, at full size. Depictions that look fine in a small preview often reveal overlapping labels or clipped substituents when viewed at print scale.</p>
+    </div>
+
+    <h2>Building a panel figure</h2>
+    <p>The <a href="panel.html">panel builder</a> composes several structures into one image, which is how most medicinal chemistry figures are actually laid out. One compound per line, in either form:</p>
+    <pre><code>Aspirin | CC(=O)OC1=CC=CC=C1C(=O)O
+Caffeine | CN1C=NC2=C1C(=O)N(C)C(=O)N2C
+Warfarin</code></pre>
+    <p>A line with a label and a SMILES string draws immediately. A line with just a name is resolved through PubChem first, so it needs a connection and takes a moment longer. Column count controls the grid shape; the exported file is a single figure, not a zip of separate images.</p>
+
+    <h2>A short SMILES primer</h2>
+    <p>SMILES writes a structure as a line of text. The essentials cover most drug-like molecules:</p>
+    <ul>
+      <li><strong>Atoms</strong> are element symbols. Carbon chains are just <code>CCC</code>; hydrogens are implied.</li>
+      <li><strong>Bonds</strong> are implicit for single, <code>=</code> for double, <code>#</code> for triple.</li>
+      <li><strong>Branches</strong> sit in parentheses: <code>CC(C)C</code> is isobutane.</li>
+      <li><strong>Rings</strong> open and close with a matching digit: <code>C1CCCCC1</code> is cyclohexane.</li>
+      <li><strong>Aromatic rings</strong> use lowercase: <code>c1ccccc1</code> is benzene.</li>
+      <li><strong>Charges and isotopes</strong> go in brackets: <code>[NH4+]</code>, <code>[13C]</code>.</li>
+      <li><strong>Stereochemistry</strong> uses <code>/</code> and <code>\</code> for double bonds, <code>@</code> and <code>@@</code> for chiral centres.</li>
+    </ul>
+    <p>If you don't want to write one by hand, look the compound up by name here, or copy the canonical SMILES from its PubChem page.</p>
+
+    <h2>When something doesn't work</h2>
+    <table>
+      <thead><tr><th>What you see</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>SMILES could not be parsed</td><td>Usually an unclosed ring digit, an unbalanced bracket, or a capital <code>C</code> where an aromatic lowercase <code>c</code> belongs.</td></tr>
+        <tr><td>PubChem has no compound by that name</td><td>Try the systematic or generic name rather than a brand name, check the spelling, or paste SMILES instead.</td></tr>
+        <tr><td>The chemistry engine could not load</td><td>The page fetches RDKit from a CDN on first load. Reload with a working connection; some institutional firewalls block CDN traffic.</td></tr>
+        <tr><td>Name lookup is slow or fails in bulk</td><td>PubChem asks for no more than about five requests per second. Large panels of names take a moment; supplying SMILES avoids the limit entirely.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Privacy</h2>
+    <p>Structures are rendered by WebAssembly inside your browser. Nothing you type or draw is sent to a server, and nothing is stored. The one exception is name lookup, which by necessity sends the name you typed to PubChem — if a structure is confidential, paste it as SMILES rather than looking it up.</p>
+
+    <h2>Doing this in Python instead</h2>
+    <p>For batch work over CSV files, reproducible scripting, or automatic caption generation, use the <a href="https://github.com/akinwumiishola5000/MolPic">MolPic Python package</a>:</p>
+    <pre><code>pip install git+https://github.com/akinwumiishola5000/MolPic.git
+molpic generate "aspirin" -o aspirin.svg --no-h --name "Aspirin"</code></pre>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>MolPic Web — browser companion to the <a href="https://github.com/akinwumiishola5000/MolPic">MolPic</a> Python package.</span>
+    <span>Rendering by <a href="https://github.com/rdkit/rdkit-js">RDKit.js</a> · names by <a href="https://pubchem.ncbi.nlm.nih.gov/">PubChem</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
